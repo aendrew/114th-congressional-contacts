@@ -27,23 +27,25 @@ const E164Number =  `+1${withoutDashes}`;
 
 // get the carrier data from the twilio API
 const getCarrierMetadata = async (function () {
-  await (function () {
-    client.phoneNumbers(E164Number).get({
-      type: 'carrier'
-    }, function (error, number) {
-      const response = {};
-      if (error) { console.log('error', error) };
-      console.log('carrier response from twilio API', number);
-      response.carrierErrorCode = number.carrier.error_code;
-      response.carrierType = number.carrier.type;
-      response.carrierName = number.carrier.name;
-      response.mobileNetworkCode = number.carrier.mobile_network_code;
-      response.mobileCountryCode = number.carrier.mobile_country_code;
-      return response;
+  try {
+    const number = await client.phoneNumbers(E164Number).get({
+        type: 'carrier'
     });
-  });
+
+    const response = {};
+    if (error) { console.log('error', error) };
+    console.log('carrier response from twilio API', number);
+    response.carrierErrorCode = number.carrier.error_code;
+    response.carrierType = number.carrier.type;
+    response.carrierName = number.carrier.name;
+    response.mobileNetworkCode = number.carrier.mobile_network_code;
+    response.mobileCountryCode = number.carrier.mobile_country_code;
+    return response;
+  } catch (e) {
+    return e;
+  }
 })
-    
+
 // also get the caller name data from the twilio API
 const getCallerMetadata = async (function () {
   await (function () {
